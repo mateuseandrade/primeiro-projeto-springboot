@@ -5,12 +5,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 
 
@@ -37,6 +39,26 @@ public class PrimeiraController {
   @PostMapping("/metodoComBodyParams")
   public String metodoComBodyParams(@RequestBody Usuario usuario) {
       return "metodoComBodyParams " + usuario.username();
+  }
+
+  @PostMapping("/metodoComHeaders")
+  public String metodoComHeaders(@RequestHeader("name") String name) {
+      return "metodoComHeaders " + name;
+  }
+
+  @PostMapping("/metodoComListHeaders")
+  public String metodoComListHeaders(@RequestHeader Map<String, String> headers) {
+      return "metodoComListHeaders " + headers.entrySet();
+  }
+
+  @GetMapping("/metodoResponseEntity/{id}")
+  public ResponseEntity<Object> metodoResponseEntity(@PathVariable Long id) {
+      var usuario = new Usuario ("mateuseandrade");
+      if(id > 5) {
+        return ResponseEntity.status(HttpStatus.OK).body(usuario);
+      } else {
+        return ResponseEntity.badRequest().body("numero menor que 5");
+      }
   }
 
   record Usuario(String username) {
